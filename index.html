@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finna Investment Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            max-width: 400px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        select, input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Finna Investment Calculator</h2>
+        <label for="sipAmount">Monthly SIP Amount:</label>
+        <input type="number" id="sipAmount" placeholder="Enter SIP amount" required>
+        
+        <label for="sector">Select Sector:</label>
+        <select id="sector">
+            <option value="health">Health</option>
+            <option value="finance">Finance</option>
+            <option value="technology">Technology</option>
+            <option value="automobile">Automobile</option>
+        </select>
+        
+        <label for="duration">Investment Duration (Years):</label>
+        <input type="number" id="duration" placeholder="Enter years" required>
+        
+        <button onclick="calculateInvestment()">Calculate</button>
+        
+        <h3 id="result"></h3>
+    </div>
+
+    <script>
+        function getInterestRate(sector, years) {
+            const rates = {
+                health: [3, 4, 5],
+                finance: [7, 8, 9],
+                technology: [10, 11, 12],
+                automobile: [13, 14, 15]
+            };
+            
+            if (years <= 1) return rates[sector][0];
+            else if (years <= 3) return rates[sector][1];
+            else return rates[sector][2];
+        }
+        
+        function calculateInvestment() {
+            let sipAmount = parseFloat(document.getElementById('sipAmount').value);
+            let sector = document.getElementById('sector').value;
+            let years = parseInt(document.getElementById('duration').value);
+            
+            if (isNaN(sipAmount) || sipAmount <= 0 || isNaN(years) || years <= 0) {
+                document.getElementById('result').innerText = "Please enter valid inputs.";
+                return;
+            }
+            
+            let rate = getInterestRate(sector, years) / 100;
+            let months = years * 12;
+            let totalInvestment = sipAmount * months;
+            let maturityAmount = sipAmount * ((Math.pow(1 + rate / 12, months) - 1) / (rate / 12)) * (1 + rate / 12);
+            
+            document.getElementById('result').innerText = `Total Investment: ₹${totalInvestment.toFixed(2)}\nExpected Returns: ₹${maturityAmount.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
